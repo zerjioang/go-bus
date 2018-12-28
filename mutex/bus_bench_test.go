@@ -2,6 +2,7 @@ package mutex_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/zerjioang/go-bus"
 	"github.com/zerjioang/go-bus/mutex"
@@ -38,8 +39,37 @@ func BenchmarkEventBus(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
 		for n := 0; n < b.N; n++ {
-			mutex.NewBus()
+			_ = mutex.NewBus()
 		}
+	})
+
+	b.Run("instantiation-ptr", func(b *testing.B) {
+		b.ReportAllocs()
+		b.SetBytes(1)
+		for n := 0; n < b.N; n++ {
+			_ = mutex.NewBusPtr()
+		}
+	})
+
+	b.Run("str-to-uint32", func(b *testing.B) {
+		b.ReportAllocs()
+		b.SetBytes(1)
+		for n := 0; n < b.N; n++ {
+			mutex.StrTouint32("HelloWorld")
+		}
+	})
+
+	b.Run("str-to-uint32-concurrent", func(b *testing.B) {
+		b.ReportAllocs()
+		b.SetBytes(1)
+		for n := 0; n < b.N; n++ {
+			go func() {
+				if mutex.StrTouint32("HelloWorld") != 926844193 {
+					b.Error("hash function failed")
+				}
+			}()
+		}
+		time.Sleep(10 * time.Second)
 	})
 
 	b.Run("subscribe", func(b *testing.B) {

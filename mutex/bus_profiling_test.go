@@ -29,7 +29,7 @@ func TestEventBusProfilingWeb(t *testing.T) {
 	for {
 		bus := NewBus()
 		bus.Subscribe("test", func(e gobus.EventMessage) {
-			fmt.Printf("%#v\n", e)
+			//fmt.Printf("%#v\n", e)
 		})
 		bus.Send("test", gobus.EventPayload{"pi": 3.14159})
 		time.Sleep(10 * time.Millisecond)
@@ -42,13 +42,14 @@ func TestEventBusProfilingFile(t *testing.T) {
 		pprof2.StartCPUProfile(f)
 		defer pprof2.StopCPUProfile()
 	}
-	for i := 0; i < 500; i++ {
-		bus := NewBus()
-		bus.Subscribe("test", func(e gobus.EventMessage) {
-			fmt.Printf("%#v\n", e)
-		})
+	bus := NewBus()
+	bus.Subscribe("test", func(e gobus.EventMessage) {
+		//fmt.Printf("%#v\n", e)
+	})
+	for i := 0; i < 5000; i++ {
 		bus.Send("test", gobus.EventPayload{"pi": 3.14159})
 		fmt.Println(i)
-		time.Sleep(10 * time.Millisecond)
+		//time.Sleep(2 * time.Millisecond)
 	}
+	bus.Shutdown()
 }

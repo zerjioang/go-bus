@@ -15,6 +15,19 @@ func TestEventBus(t *testing.T) {
 		_ = NewBus()
 	})
 
+	t.Run("instantiation-ptr", func(t *testing.T) {
+		busPtr := NewBusPtr()
+		if busPtr == nil {
+			t.Error("failed to instantiate a bus via pointer")
+		}
+	})
+
+	t.Run("str-to-uint32", func(t *testing.T) {
+		if StrTouint32("HelloWorld") != 926844193 {
+			t.Error("hash function failed")
+		}
+	})
+
 	t.Run("pubsub", func(t *testing.T) {
 		bus := NewBus()
 		bus.Subscribe("test", func(e gobus.EventMessage) {

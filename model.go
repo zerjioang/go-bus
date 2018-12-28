@@ -1,6 +1,6 @@
 package gobus
 
-// EventPayload represents the context of an event, a simple map.
+// EventPayload represents the context of an event, a simple key-value map.
 type EventPayload map[string]interface{}
 
 // EventMessage is send on the bus to all subscribed listeners

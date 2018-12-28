@@ -1,10 +1,5 @@
 #!/bin/bash
 
-#
-# Copyright Lastr Distributed Ledger. All Rights Reserved.
-# SPDX-License-Identifier: GNU GPL v3
-#
-
 cd "$(dirname "$0")"
 
 # move to project root dir from ./scripts to ./
