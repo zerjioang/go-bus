@@ -1,44 +1,57 @@
-# Eventbus for Go
+<p align="center">
+  <img alt="gobus" src="https://user-images.githubusercontent.com/6706342/50519588-f3fb3700-0abb-11e9-965f-f582b46b7b46.png" width="500px"></img>
+  <h3 align="center"><b>PubSub Event bus for Go</b></h3>
+</p>
 
-Package **go-bus** is a thread-safe, concurrent, pub-sub event bus for embebbed go apps and microservices.
+<p align="center">
+    <a href="https://travis-ci.org/zerjioang/go-bus">
+      <img alt="Build Status" src="https://travis-ci.org/zerjioang/go-bus.svg?branch=master">
+    </a>
+    <a href="https://goreportcard.com/report/github.com/zerjioang/go-bus">
+       <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/zerjioang/go-bus">
+    </a>
+    <a href="https://github.com/zerjioang/go-bus/blob/master/LICENSE">
+        <img alt="Software License" src="http://img.shields.io/:license-gpl3-brightgreen.svg?style=flat-square">
+    </a>
+    <a href="https://godoc.org/github.com/zerjioang/go-bus">
+       <img alt="Build Status" src="https://godoc.org/github.com/zerjioang/go-bus?status.svg">
+    </a>
+</p>
+
+Package **go-bus** is a thread-safe, **zero-alloc**, pub-sub event bus for embebbed go apps and microservices.
+
+## Install
+
+```bash
+go get github.com/zerjioang/go-bus
+```
 
 ## TL;DR
 
 ```go
-func TestExampleCalculationBusWithChain(t *testing.T){
+func TestExampleCalculationBus(t *testing.T) {
 	//define a global bus instance
 	bus := mutex.NewBus()
 
-	//register our subscriber 1: the calculation engine
+	//register our subscriber: the calculation engine
 	bus.Subscribe("calc", func(message gobus.EventMessage) {
 		println("new calculation request arrived")
 		a := message.Get("a").(int)
 		b := message.Get("b").(int)
-
 		println("received a = ", a)
 		println("received b = ", b)
-		result := a+b
-
-		bus.Send("calc-print", gobus.EventPayload{
-			"result": result,
-		})
-	})
-
-	//register our subscriber 2: the calculation printer
-	bus.Subscribe("calc-print", func(message gobus.EventMessage) {
-		result:= message.Get("result").(int)
-		println("the sum is", result)
-	})
-
-	bus.Send("calc", gobus.EventPayload{
-		"a": 8,
-		"b": 12,
+		println("the sum is", a+b)
 	})
 
 	//register our data publisher
 	bus.Send("calc", gobus.EventPayload{
 		"a": 5,
 		"b": 10,
+	})
+
+	bus.Send("calc", gobus.EventPayload{
+		"a": 8,
+		"b": 12,
 	})
 
 	bus.Shutdown()
@@ -63,12 +76,16 @@ Always do benchmarking with your own data. Here are mine:
 ### For mutex based version
 
 ```bash
-BenchmarkEventBus/instantiation-4                      2000000000	         0.41 ns/op	2453.96 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/subscribe-4             	              5000000	          242 ns/op	   4.12 MB/s	      43 B/op	       0 allocs/op
-BenchmarkEventBus/subscribe-invalid-no-name-4         	500000000	         3.27 ns/op	 306.27 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/subscribe-invalid-no-listener-4     	300000000	         4.42 ns/op	 226.48 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/publish-4                           	 50000000	         28.1 ns/op	  35.53 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/pub-sub-4                           	   100000	       139794 ns/op	   0.01 MB/s	      46 B/op	       0 allocs/op
+BenchmarkEventBus/instantiation-4         				2000000000	         0.47 ns/op	2143.53 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/instantiation-ptr-4     				2000000000	         0.46 ns/op	2190.94 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/str-to-uint32-4         				50000000	        22.2 ns/op	  45.06 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/subscribe-4                        	 5000000	       314 ns/op	   3.18 MB/s	      43 B/op	       0 allocs/op
+BenchmarkEventBus/subscribe-invalid-no-name-4        	300000000	         3.90 ns/op	 256.73 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/subscribe-invalid-no-listener-4    	300000000	         5.16 ns/op	 193.86 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/publish-no-subscriber-4            	 2000000	       616 ns/op	   1.62 MB/s	       1 B/op	       0 allocs/op
+BenchmarkEventBus/publish-with-subscriber-4          	 2000000	       697 ns/op	   1.43 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/pub-sub-4                          	  200000	    213943 ns/op	   0.00 MB/s	      51 B/op	       0 allocs/op
+PASS
 ```
 
 Special thanks to http://ernestmicklei.com/2014/11/guava-like-eventbus-for-go/ for it's original approach
