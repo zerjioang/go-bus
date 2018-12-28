@@ -17,6 +17,7 @@ type Bus struct {
 
 var (
 	h = fnv.New32a()
+	hlock sync.Mutex
 )
 
 func NewBus() Bus {
@@ -35,9 +36,13 @@ func NewBusPtr() *Bus {
 
 func StrTouint32(s string) uint32 {
 	//h := fnv.New32a()
+	hlock.Lock()
 	h.Reset()
 	h.Write(strToByte(s))
-	return h.Sum32()
+	v := h.Sum32()
+	hlock.Unlock()
+	return v
+
 }
 
 func strToByte(s string) []byte {
@@ -57,7 +62,6 @@ func (e *Bus) Subscribe(topic string, listener gobus.EventListener) {
 		* check if map is empty
 		* if not empty, get requested id
 	*/
-	id := StrTouint32(topic)
 	e.listenerMutex.RLock()
 	empty := e.listeners == nil
 	e.listenerMutex.RUnlock()
@@ -66,6 +70,7 @@ func (e *Bus) Subscribe(topic string, listener gobus.EventListener) {
 	if empty {
 		e.listeners = make(map[uint32][]gobus.EventListener)
 	}
+	id := StrTouint32(topic)
 	list, _ = e.listeners[id]
 	list = append(list, listener)
 	e.listeners[id] = list
@@ -81,11 +86,11 @@ func (e *Bus) Send(topic string, data map[string]interface{}) {
 	if data == nil {
 		return
 	}
-	id := StrTouint32(topic)
 
 	e.wg.Add(1)
 	go func() {
 		e.listenerMutex.RLock()
+		id := StrTouint32(topic)
 		list, present := e.listeners[id]
 		e.listenerMutex.RUnlock()
 		if present {

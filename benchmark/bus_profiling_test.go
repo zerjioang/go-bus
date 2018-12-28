@@ -1,7 +1,10 @@
-package mutex
+// +build example
+
+package benchmark
 
 import (
 	"fmt"
+	"github.com/zerjioang/go-bus/mutex"
 	"net/http"
 	"net/http/pprof"
 	"os"
@@ -27,7 +30,7 @@ func TestEventBusProfilingWeb(t *testing.T) {
 	}()
 	//infinite loop
 	for {
-		bus := NewBus()
+		bus := mutex.NewBus()
 		bus.Subscribe("test", func(e gobus.EventMessage) {
 			//fmt.Printf("%#v\n", e)
 		})
@@ -42,7 +45,7 @@ func TestEventBusProfilingFile(t *testing.T) {
 		pprof2.StartCPUProfile(f)
 		defer pprof2.StopCPUProfile()
 	}
-	bus := NewBus()
+	bus := mutex.NewBus()
 	bus.Subscribe("test", func(e gobus.EventMessage) {
 		//fmt.Printf("%#v\n", e)
 	})

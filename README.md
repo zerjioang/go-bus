@@ -76,15 +76,15 @@ Always do benchmarking with your own data. Here are mine:
 ### For mutex based version
 
 ```bash
-BenchmarkEventBus/instantiation-4         				2000000000	         0.47 ns/op	2143.53 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/instantiation-ptr-4     				2000000000	         0.46 ns/op	2190.94 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/str-to-uint32-4         				50000000	        22.2 ns/op	  45.06 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/subscribe-4                        	 5000000	       314 ns/op	   3.18 MB/s	      43 B/op	       0 allocs/op
-BenchmarkEventBus/subscribe-invalid-no-name-4        	300000000	         3.90 ns/op	 256.73 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/subscribe-invalid-no-listener-4    	300000000	         5.16 ns/op	 193.86 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/publish-no-subscriber-4            	 2000000	       616 ns/op	   1.62 MB/s	       1 B/op	       0 allocs/op
-BenchmarkEventBus/publish-with-subscriber-4          	 2000000	       697 ns/op	   1.43 MB/s	       0 B/op	       0 allocs/op
-BenchmarkEventBus/pub-sub-4                          	  200000	    213943 ns/op	   0.00 MB/s	      51 B/op	       0 allocs/op
+BenchmarkEventBus/instantiation-4                     2000000000	         0.42 ns/op	2394.34 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/instantiation-ptr-                  2000000000	         0.43 ns/op	2310.56 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/str-to-uint32-4                       50000000	        37.6 ns/op	  26.56 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/subscribe-4                            5000000	       274 ns/op	   3.64 MB/s	      43 B/op	       0 allocs/op
+BenchmarkEventBus/subscribe-invalid-no-name-4          500000000	         3.38 ns/op	 295.51 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/subscribe-invalid-no-listener-4      300000000	         4.20 ns/op	 238.03 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/publish-no-subscriber-4                3000000	       468 ns/op	   2.13 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/publish-with-subscriber-4              3000000	       476 ns/op	   2.10 MB/s	       0 B/op	       0 allocs/op
+BenchmarkEventBus/pub-sub-4                               100000	     79957 ns/op	   0.01 MB/s	      48 B/op	       0 allocs/op
 PASS
 ```
 
