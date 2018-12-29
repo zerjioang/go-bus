@@ -11,6 +11,14 @@ import (
 )
 
 func TestEventBus(t *testing.T) {
+
+	t.Run("shared-bus", func(t *testing.T) {
+		busPtr := SharedBus()
+		if busPtr == nil {
+			t.Error("failed to get app shared bus via pointer")
+		}
+	})
+
 	t.Run("instantiation", func(t *testing.T) {
 		_ = NewBus()
 	})

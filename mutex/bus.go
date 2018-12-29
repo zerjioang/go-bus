@@ -16,9 +16,18 @@ type Bus struct {
 }
 
 var (
+	onceCheck        sync.Once
+	sharedBus *Bus
 	h = fnv.New32a()
 	hlock sync.Mutex
 )
+
+func SharedBus() *Bus {
+	onceCheck.Do(func() {
+		sharedBus = NewBusPtr()
+	})
+	return sharedBus
+}
 
 func NewBus() Bus {
 	bus := Bus{}

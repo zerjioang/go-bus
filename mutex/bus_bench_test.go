@@ -35,6 +35,15 @@ var (
 )
 
 func BenchmarkEventBus(b *testing.B) {
+
+	b.Run("shared-bus", func(b *testing.B) {
+		b.ReportAllocs()
+		b.SetBytes(1)
+		for n := 0; n < b.N; n++ {
+			_ = mutex.SharedBus()
+		}
+	})
+
 	b.Run("instantiation", func(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)

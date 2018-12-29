@@ -9,17 +9,9 @@
   revision = "5b67d428864e92711fcbd2f8629456121a56d91f"
   version = "v1.2.1"
 
-[[projects]]
-  branch = "develop"
-  digest = "1:a6e78d25f58647530e381c3cc1f691aad573af3b7f596a176a4222182ee81e4b"
-  name = "github.com/zerjioang/laster"
-  packages = ["common/profiling"]
-  pruneopts = "UT"
-  revision = "bf79857e5221c0a18c306f285e000a2ebbd3d9cd"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/zerjioang/laster/common/profiling"]
+  input-imports = ["github.com/pkg/profile"]
   solver-name = "gps-cdcl"
   solver-version = 1
