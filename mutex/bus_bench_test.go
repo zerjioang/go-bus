@@ -1,11 +1,8 @@
-package mutex_test
+package mutex
 
 import (
-	"testing"
-	"time"
-
 	"github.com/zerjioang/go-bus"
-	"github.com/zerjioang/go-bus/mutex"
+	"testing"
 )
 
 /*
@@ -40,7 +37,7 @@ func BenchmarkEventBus(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
 		for n := 0; n < b.N; n++ {
-			_ = mutex.SharedBus()
+			_ = SharedBus()
 		}
 	})
 
@@ -48,7 +45,7 @@ func BenchmarkEventBus(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
 		for n := 0; n < b.N; n++ {
-			_ = mutex.NewBus()
+			_ = NewBus()
 		}
 	})
 
@@ -56,7 +53,7 @@ func BenchmarkEventBus(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
 		for n := 0; n < b.N; n++ {
-			_ = mutex.NewBusPtr()
+			_ = NewBusPtr()
 		}
 	})
 
@@ -64,27 +61,14 @@ func BenchmarkEventBus(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
 		for n := 0; n < b.N; n++ {
-			mutex.StrTouint32("HelloWorld")
+			strTouint32("HelloWorld")
 		}
-	})
-
-	b.Run("str-to-uint32-concurrent", func(b *testing.B) {
-		b.ReportAllocs()
-		b.SetBytes(1)
-		for n := 0; n < b.N; n++ {
-			go func() {
-				if mutex.StrTouint32("HelloWorld") != 926844193 {
-					b.Error("hash function failed")
-				}
-			}()
-		}
-		time.Sleep(10 * time.Second)
 	})
 
 	b.Run("subscribe", func(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
-		bus := mutex.NewBus()
+		bus := NewBus()
 		for n := 0; n < b.N; n++ {
 			bus.Subscribe("test", testListener)
 		}
@@ -93,7 +77,7 @@ func BenchmarkEventBus(b *testing.B) {
 	b.Run("subscribe-invalid-no-name", func(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
-		bus := mutex.NewBus()
+		bus := NewBus()
 		for n := 0; n < b.N; n++ {
 			bus.Subscribe("", testListener)
 		}
@@ -102,38 +86,57 @@ func BenchmarkEventBus(b *testing.B) {
 	b.Run("subscribe-invalid-no-listener", func(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
-		bus := mutex.NewBus()
+		bus := NewBus()
 		for n := 0; n < b.N; n++ {
 			bus.Subscribe("test", nil)
 		}
 	})
 
-	b.Run("publish-no-subscriber", func(b *testing.B) {
+	b.Run("emit-no-subscriber", func(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
-		bus := mutex.NewBus()
+		bus := NewBus()
 		for n := 0; n < b.N; n++ {
-			bus.Send("test", exampleMessage)
+			bus.EmitWithMessage("test", exampleMessage)
 		}
 	})
 
-	b.Run("publish-with-subscriber", func(b *testing.B) {
+	b.Run("emit-with-message-no-subscriber", func(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
-		bus := mutex.NewBus()
+		bus := NewBus()
+		for n := 0; n < b.N; n++ {
+			bus.EmitWithMessage("test", exampleMessage)
+		}
+	})
+
+	b.Run("emit-with-1-subscriber", func(b *testing.B) {
+		b.ReportAllocs()
+		b.SetBytes(1)
+		bus := NewBus()
 		bus.Subscribe("test", testListener)
 		for n := 0; n < b.N; n++ {
-			bus.Send("test", exampleMessage)
+			bus.Emit("test")
+		}
+	})
+
+	b.Run("emit-with-message-1-subscriber", func(b *testing.B) {
+		b.ReportAllocs()
+		b.SetBytes(1)
+		bus := NewBus()
+		bus.Subscribe("test", testListener)
+		for n := 0; n < b.N; n++ {
+			bus.EmitWithMessage("test", exampleMessage)
 		}
 	})
 
 	b.Run("pub-sub", func(b *testing.B) {
 		b.ReportAllocs()
 		b.SetBytes(1)
-		bus := mutex.NewBus()
+		bus := NewBus()
 		for n := 0; n < b.N; n++ {
 			bus.Subscribe("test", testListener)
-			bus.Send("test", exampleMessage)
+			bus.EmitWithMessage("test", exampleMessage)
 		}
 	})
 }

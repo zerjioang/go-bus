@@ -30,7 +30,7 @@ func TestExampleCalculationBusWithChain(t *testing.T) {
 		println("received b = ", b)
 		result := a + b
 
-		bus.Send("calc-print", gobus.EventPayload{
+		bus.EmitWithMessage("calc-print", gobus.EventPayload{
 			"result": result,
 		})
 	})
@@ -41,13 +41,13 @@ func TestExampleCalculationBusWithChain(t *testing.T) {
 		println("the sum is", result)
 	})
 
-	bus.Send("calc", gobus.EventPayload{
+	bus.EmitWithMessage("calc", gobus.EventPayload{
 		"a": 8,
 		"b": 12,
 	})
 
 	//register our data publisher
-	bus.Send("calc", gobus.EventPayload{
+	bus.EmitWithMessage("calc", gobus.EventPayload{
 		"a": 5,
 		"b": 10,
 	})

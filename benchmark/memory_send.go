@@ -16,7 +16,7 @@ func main() {
 	})
 	e := gobus.EventPayload{"pi": 3.14159}
 	for i := 0; i < 5000000; i++ {
-		bus.Send("test", e)
+		bus.EmitWithMessage("test", e)
 	}
 	bus.Shutdown()
 }

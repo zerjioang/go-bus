@@ -43,7 +43,7 @@ func NewBusPtr() *Bus {
 	return bus
 }
 
-func StrTouint32(s string) uint32 {
+func strTouint32(s string) uint32 {
 	//h := fnv.New32a()
 	hlock.Lock()
 	h.Reset()
@@ -51,7 +51,6 @@ func StrTouint32(s string) uint32 {
 	v := h.Sum32()
 	hlock.Unlock()
 	return v
-
 }
 
 func strToByte(s string) []byte {
@@ -79,16 +78,16 @@ func (e *Bus) Subscribe(topic string, listener gobus.EventListener) {
 	if empty {
 		e.listeners = make(map[uint32][]gobus.EventListener)
 	}
-	id := StrTouint32(topic)
+	id := strTouint32(topic)
 	list, _ = e.listeners[id]
 	list = append(list, listener)
 	e.listeners[id] = list
 	e.listenerMutex.Unlock()
 }
 
-// Send sends an event to all subscribed listeners.
-// Parameter data is optional ; Send can only have one map parameter.
-func (e *Bus) Send(topic string, data map[string]interface{}) {
+// EmitWithMessage sends an event to all subscribed listeners.
+// Parameter data is optional ; EmitWithMessage can only have one map parameter.
+func (e *Bus) EmitWithMessage(topic string, data map[string]interface{}) {
 	if topic == "" {
 		return
 	}
@@ -99,11 +98,27 @@ func (e *Bus) Send(topic string, data map[string]interface{}) {
 	e.wg.Add(1)
 	go func() {
 		e.listenerMutex.RLock()
-		id := StrTouint32(topic)
+		id := strTouint32(topic)
 		list, present := e.listeners[id]
 		e.listenerMutex.RUnlock()
 		if present {
 			e.sendEvent(list, topic, data)
+			e.wg.Done()
+		}
+	}()
+}
+
+// Send sends an event to all subscribed listeners.
+// Parameter data is optional ; Send can only have one map parameter.
+func (e *Bus) Emit(topic string) {
+	e.wg.Add(1)
+	go func() {
+		e.listenerMutex.RLock()
+		id := strTouint32(topic)
+		list, present := e.listeners[id]
+		e.listenerMutex.RUnlock()
+		if present {
+			e.sendEvent(list, topic, nil)
 			e.wg.Done()
 		}
 	}()

@@ -34,7 +34,7 @@ func TestEventBusProfilingWeb(t *testing.T) {
 		bus.Subscribe("test", func(e gobus.EventMessage) {
 			//fmt.Printf("%#v\n", e)
 		})
-		bus.Send("test", gobus.EventPayload{"pi": 3.14159})
+		bus.EmitWithMessage("test", gobus.EventPayload{"pi": 3.14159})
 		time.Sleep(10 * time.Millisecond)
 	}
 }
@@ -50,7 +50,7 @@ func TestEventBusProfilingFile(t *testing.T) {
 		//fmt.Printf("%#v\n", e)
 	})
 	for i := 0; i < 5000; i++ {
-		bus.Send("test", gobus.EventPayload{"pi": 3.14159})
+		bus.EmitWithMessage("test", gobus.EventPayload{"pi": 3.14159})
 		fmt.Println(i)
 		//time.Sleep(2 * time.Millisecond)
 	}

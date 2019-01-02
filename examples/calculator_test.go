@@ -31,12 +31,12 @@ func TestExampleCalculationBus(t *testing.T) {
 	})
 
 	//register our data publisher
-	bus.Send("calc", gobus.EventPayload{
+	bus.EmitWithMessage("calc", gobus.EventPayload{
 		"a": 5,
 		"b": 10,
 	})
 
-	bus.Send("calc", gobus.EventPayload{
+	bus.EmitWithMessage("calc", gobus.EventPayload{
 		"a": 8,
 		"b": 12,
 	})

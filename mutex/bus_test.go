@@ -31,7 +31,7 @@ func TestEventBus(t *testing.T) {
 	})
 
 	t.Run("str-to-uint32", func(t *testing.T) {
-		if StrTouint32("HelloWorld") != 926844193 {
+		if strTouint32("HelloWorld") != 926844193 {
 			t.Error("hash function failed")
 		}
 	})
@@ -44,7 +44,7 @@ func TestEventBus(t *testing.T) {
 		bus.Subscribe("test", func(e gobus.EventMessage) {
 			fmt.Printf("B: %#v\n", e)
 		})
-		bus.Send("test", gobus.EventPayload{"pi": 3.14159})
+		bus.EmitWithMessage("test", gobus.EventPayload{"pi": 3.14159})
 	})
 
 	t.Run("pubsub-concurrent", func(t *testing.T) {
@@ -65,7 +65,7 @@ func TestEventBus(t *testing.T) {
 		for i := 0; i < 10; i++ {
 			go func(thread *sync.WaitGroup, idx int) {
 				fmt.Println("sending message to bus", idx)
-				go bus.Send("test", gobus.EventPayload{"index": idx})
+				go bus.EmitWithMessage("test", gobus.EventPayload{"index": idx})
 				fmt.Println("message sent to bus", idx)
 				defer thread.Done()
 			}(&wg, i)
