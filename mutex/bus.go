@@ -64,18 +64,8 @@ func (e *Bus) Subscribe(topic string, listener gobus.EventListener) {
 	}
 	var list []gobus.EventListener
 
-	//read current map status
-	/*
-		in the same lock period
-		* check if map is empty
-		* if not empty, get requested id
-	*/
-	e.listenerMutex.RLock()
-	empty := e.listeners == nil
-	e.listenerMutex.RUnlock()
-
 	e.listenerMutex.Lock()
-	if empty {
+	if e.listeners == nil {
 		e.listeners = make(map[uint32][]gobus.EventListener)
 	}
 	id := strTouint32(topic)
